@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Middleware para analizar el cuerpo de la solicitud
 app.use(express.json());
@@ -62,6 +62,7 @@ app.get('/getLastUser', async (req, res) => {
     res.status(500).json({ message: 'Error fetching last user', error });
   }
 });
+
 
 // Iniciar el servidor
 app.listen(port, () => {
