@@ -2,9 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 // Middleware para analizar el cuerpo de la solicitud
 app.use(express.json());
@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(cors());
 
 // Conexión a la base de datos MongoDB
-await mongoose.connect(process.env.DB_CNN, 
+ mongoose.connect(process.env.DB_CNN, 
   { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Error connecting to MongoDB:', err));
@@ -66,7 +66,7 @@ app.get('/getLastUser', async (req, res) => {
 
 
 // Iniciar el servidor
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on http://localhost:${process.env.PORT}`);
 });
 
