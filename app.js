@@ -12,7 +12,8 @@ app.use(express.json());
 app.use(cors());
 
 // Conexión a la base de datos MongoDB
-mongoose.connect('mongodb://localhost:27017/userDB', { useNewUrlParser: true, useUnifiedTopology: true })
+await mongoose.connect(process.env.DB_CNN, 
+  { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Error connecting to MongoDB:', err));
 
@@ -68,3 +69,4 @@ app.get('/getLastUser', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
