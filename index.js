@@ -6,17 +6,13 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware para analizar el cuerpo de la solicitud
 app.use(express.json());
-// Middleware para permitir CORS
 app.use(cors());
 
-// Conexión a la base de datos MongoDB
  mongoose.connect(process.env.DB_CNN)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Error connecting to MongoDB:', err));
 
-// Esquema y modelo de usuario
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
@@ -26,15 +22,12 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// Ruta para registrar un nuevo usuario
 app.post('/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Verificar si el usuario ya existe
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      // Actualizar los detalles del usuario existente con los nuevos datos
       existingUser.email = email;
       existingUser.password = hashedPassword;
       await existingUser.save();
@@ -44,7 +37,6 @@ app.post('/register', async (req, res) => {
  
     const hashedPassword = await bcrypt.hash(password, 10);
    
-    // Crear un nuevo usuario
     const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
 
@@ -54,7 +46,6 @@ app.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Error registering user', error });
   }
 });
-
 
 app.get('/getLastUser', async (req, res) => {
   try {
@@ -71,8 +62,6 @@ app.get('/getLastUser', async (req, res) => {
   }
 });
 
-
-// Iniciar el servidor
 app.listen(process.env.PORT, () => {
   console.log(`Server running on http://localhost:${process.env.PORT}`);
 });
