@@ -5,45 +5,12 @@ const cors = require('cors');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
-// Middleware para verificar la validez del token
-const authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-
-  if (!token) return res.status(401).json({ message: 'Unauthorized' });
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-    if (err) return res.status(403).json({ message: 'Invalid token' });
-
-    req.userId = decodedToken.userId;
-    next();
-  });
+// Función para generar un token JWT
+const generateToken = (userId) => {
+  // Generar el token JWT con el ID de usuario y la clave secreta
+  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '1h' }); // expiresIn es opcional, define el tiempo de expiración del token
 };
 
-
-const app = express();
-
-// Middleware para analizar el cuerpo de la solicitud
-app.use(express.json());
-// Middleware para permitir CORS
-app.use(cors());
-
-// Conexión a la base de datos MongoDB
- mongoose.connect(process.env.DB_CNN)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Error connecting to MongoDB:', err));
-
-// Esquema y modelo de usuario
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
-});
-
-const User = mongoose.model('User', userSchema);
-
-// Ruta para registrar un nuevo usuario
-// Ruta para registrar un nuevo usuario
 app.post('/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -73,6 +40,7 @@ app.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Error registering user', error });
   }
 });
+
 
 
 app.get('/getLastUser', async (req, res) => {
