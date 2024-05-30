@@ -47,6 +47,17 @@ app.post('/register', async (req, res) => {
   }
 });
 
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  const user = users.find(u => u.email === email && u.password === password);
+  
+  if (user) {
+    res.json({ username: user.username, email: user.email });
+  } else {
+    res.status(401).json({ message: 'Invalid email or password' });
+  }
+});
+
 app.get('/getLastUser', async (req, res) => {
   try {
     const lastUser = await User.findOne().sort({ createdAt: -1 });
